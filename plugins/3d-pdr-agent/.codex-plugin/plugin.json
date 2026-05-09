@@ -1,7 +1,7 @@
 {
   "name": "3d-pdr-agent",
   "version": "0.1.0",
-  "description": "Codex skills for INPUT data placement, 3D-PDR runs, HPC submission, RTsynth production, and RT visualisation.",
+  "description": "Codex skills for hydro preview, hydro curation, 3D-PDR runs, HPC submission, RTsynth production, and RT visualisation.",
   "author": {
     "name": "3D-PDR Agent Maintainers",
     "email": "TODO@example.com",
@@ -20,8 +20,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "3D-PDR Agent",
-    "shortDescription": "Workflow skills for INPUT, 3D-PDR, HPC, RTsynth, and visualization.",
-    "longDescription": "Provides Codex skills that organize INPUT snapshots, generate 3D-PDR DAT inputs, prepare and run 3D-PDR jobs, sync and submit HPC work, produce RTsynth products, and render RT output images.",
+    "shortDescription": "Workflow skills for hydro curation, 3D-PDR, HPC, RTsynth, and visualization.",
+    "longDescription": "Provides Codex skills that preview hydro snapshots, curate INPUT data, generate paired 3D-PDR density and RTsynth velocity inputs, run 3D-PDR jobs, sync and submit HPC work, produce RTsynth products, and render RT output images.",
     "developerName": "3D-PDR Agent Maintainers",
     "category": "Productivity",
     "capabilities": [
@@ -32,8 +32,8 @@
     "privacyPolicyURL": "https://example.com/privacy",
     "termsOfServiceURL": "https://example.com/terms",
     "defaultPrompt": [
-      "Use sel-dat for snapshot 810.",
-      "Run 3D-PDR for a selected snapshot.",
+      "Preview hydro snapshots.",
+      "Curate snapshot 810 for 3D-PDR.",
       "Render RTsynth products to PNG."
     ],
     "brandColor": "#2563EB"

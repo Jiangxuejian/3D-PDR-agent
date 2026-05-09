@@ -1,12 +1,12 @@
 ---
-name: rt-vis
-description: "Convert RTsynth post-processed output files (column density _cds.dat and integrated-intensity _CO10.dat) to PNG images. Use when: visualising RTsynth products, making images from RT outputs, plotting column density maps, plotting CO line maps, converting all RT .dat files to images, batch image generation from Products/RTsynth."
+name: render-rt
+description: "Render RTsynth post-processed output files (column density _cds.dat and integrated-intensity _CO10.dat) to PNG images. Use when visualising RTsynth products, making images from RT outputs, plotting column density maps, plotting CO line maps, converting all RT .dat files to images, or batch image generation from Products/RTsynth."
 argument-hint: "Optionally specify: target directory, file pattern (cds or CO10), coolant/line tag, mask threshold, overwrite flag."
 user-invocable: true
 disable-model-invocation: false
 ---
 
-# RT-vis
+# Render RT
 
 Convert RTsynth post-processed `.dat` output files to publication-quality PNG images.
 Outputs are written next to their source files (same directory, same stem, `.png` extension).
@@ -19,7 +19,7 @@ Outputs are written next to their source files (same directory, same stem, `.png
 ## Inputs To Collect
 Before running, confirm:
 - **Target directory** — folder containing the `.dat` files, or the root to search recursively.
-  - Default when running after `/rt-prod`: `Products/RTsynth/<sim>/snapshots/<snapshot>/<sims_*>/`
+  - Default when running after `/run-rtsynth`: `Products/RTsynth/<sim>/snapshots/<snapshot>/<sims_*>/`
 - **File type** — column density (`_cds.dat`) or integrated intensity (`_CO10.dat`); drives pattern + threshold defaults.
 - **Overwrite** — whether to regenerate existing `.png` files (default: skip).
 
@@ -36,7 +36,7 @@ Adjust `--threshold` and `--vmax-factor` if the images look washed out or mostly
 
 ### 1. Locate target directory
 Resolve the directory containing `.dat` files.
-- If invoked after `/rt-prod`, use the Products destination path reported in that skill's completion summary.
+- If invoked after `/run-rtsynth`, use the Products destination path reported in that skill's completion summary.
 - If invoked directly, ask the user or infer from workspace structure.
 - For recursive batch over all snapshots/sims, use `--recursive` with the Products root.
 
@@ -44,7 +44,7 @@ Resolve the directory containing `.dat` files.
 
 **Column density maps:**
 ```bash
-conda run -n pdfchem python /home/xjiang/data/3D-PDR-agent/.github/skills/rt-vis/scripts/rt_vis.py \
+conda run -n pdfchem python <this-skill>/scripts/rt_vis.py \
   --dir <target_dir> \
   --pattern "RT_snapshot_*_cds.dat" \
   --col 2 --name NH2 --threshold 1e13 --vmax-factor 1e10
@@ -52,7 +52,7 @@ conda run -n pdfchem python /home/xjiang/data/3D-PDR-agent/.github/skills/rt-vis
 
 **Integrated-intensity maps (CO 1-0):**
 ```bash
-conda run -n pdfchem python /home/xjiang/data/3D-PDR-agent/.github/skills/rt-vis/scripts/rt_vis.py \
+conda run -n pdfchem python <this-skill>/scripts/rt_vis.py \
   --dir <target_dir> \
   --pattern "RT_snapshot_*_CO10.dat" \
   --col 2 --name ICO --threshold 1e-6 --vmax-factor 1e6
@@ -60,7 +60,7 @@ conda run -n pdfchem python /home/xjiang/data/3D-PDR-agent/.github/skills/rt-vis
 
 **Batch over all runs under Products/RTsynth (recursive):**
 ```bash
-conda run -n pdfchem python /home/xjiang/data/3D-PDR-agent/.github/skills/rt-vis/scripts/rt_vis.py \
+conda run -n pdfchem python <this-skill>/scripts/rt_vis.py \
   --dir Products/RTsynth \
   --pattern "RT_snapshot_*_cds.dat" \
   --recursive

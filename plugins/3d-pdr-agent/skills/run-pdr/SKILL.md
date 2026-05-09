@@ -1,17 +1,18 @@
 ---
-name: pdr-run
-description: 'Run 3D-PDR for one or more INPUT selected snapshots. Use when you need to create a snapshot-local output folder named sims_<UV>_<resolution>_<run_id>, prepare local params, and execute 3DPDR with outputs written in that folder.'
+name: run-pdr
+description: 'Run 3D-PDR for one or more curated INPUT/SELECTED hydro snapshots. Use after /curate-hydro when density DAT and velocity DAT files are ready.'
 argument-hint: 'Provide snapshot path(s) or id(s), and optionally UV label, resolution label, run_id, and force mode.'
 user-invocable: true
 disable-model-invocation: false
 ---
 
-# Run 3D-PDR Snapshot
+# Run PDR
 
 ## When To Use
-- User wants to run 3D-PDR for one or more selected INPUT snapshots.
+- User wants to run 3D-PDR for one or more curated INPUT/SELECTED snapshots.
 - User wants outputs isolated under `sims_<UV>_<resolution>_<run_id>` inside each snapshot folder.
 - User wants a repeatable path from HDF5 to DAT to 3DPDR outputs.
+- User has already run `/curate-hydro` or otherwise has a selected HDF5 plus density `.dat`.
 
 ## Inputs To Collect
 - Snapshot targets:
@@ -31,8 +32,9 @@ disable-model-invocation: false
 1. Resolve each snapshot folder in SELECTED.
    - Expected path:
      - `INPUT/SELECTED/<sim>/snapshots/<snapshot>/`
-   - Required input file:
+   - Required input files:
      - `snapshot_<snapshot>.hdf5` symlink or file.
+     - `snapshot_<snapshot>.dat`
 
 2. Create local output folder and runtime links.
    - Compute output folder name:
@@ -45,13 +47,11 @@ disable-model-invocation: false
    - Ensure chemfiles are available in run folder:
      - create or refresh `<run_dir>/chemfiles` symlink to `3D-PDR-dev/chemfiles`
 
-3. Generate DAT in the snapshot folder.
-   - Run converter on the selected snapshot HDF5.
-   - Write output DAT to:
+3. Confirm curated DAT exists in the snapshot folder.
+   - Expected density input:
      - `INPUT/SELECTED/<sim>/snapshots/<snapshot>/snapshot_<snapshot>.dat`
-   - If DAT already exists and `force` is off, keep existing DAT and continue.
-   - If `force` is on, overwrite DAT.
-   - Validate DAT is non-empty and has physically reasonable max number density.
+   - If the DAT is missing, stop and run `/curate-hydro`.
+   - Validate DAT is non-empty before running 3DPDR.
 
 4. Create a short-path local params file inside `<run_dir>`.
    - Create or copy:
@@ -79,9 +79,8 @@ disable-model-invocation: false
 
 ## Decision Rules
 - Default output folder is `sims_<UV>_<resolution>_<run_id>` with defaults `UV=Draine`, `resolution=N128`, `run_id=run001`.
-- Default conversion bounds are left=`25 25 25` and right=`75 75 75` unless user overrides.
 - Default rerun behavior is skip-if-exists; only rerun when `force` is explicitly enabled.
-- If the DAT conversion reports near-zero densities, regenerate with bounds inside dataset domain before running 3DPDR.
+- If the DAT has near-zero or suspicious densities, return to `/curate-hydro` with corrected conversion bounds before running 3DPDR.
 - If 3DPDR fails with CVODE NaN step size errors, treat as invalid DAT/region first, then rerun after conversion fix.
 - If path strings are long, always run from snapshot-local `<run_dir>` using short relative params values.
 - For batch runs, continue other snapshots after a single snapshot failure and report per-snapshot status.

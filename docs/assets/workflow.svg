@@ -1,0 +1,87 @@
+<svg width="980" height="290" viewBox="0 0 980 290" role="img" aria-labelledby="title desc" xmlns="http://www.w3.org/2000/svg">
+  <title id="title">3D-PDR Agent workflow</title>
+  <desc id="desc">Workflow diagram showing optional preview-hydro, main curate-hydro to run-pdr to run-rtsynth path, optional hpc-run branch, and optional render-rt step.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334E68"/>
+    </marker>
+    <marker id="arrowOptional" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#F28C28"/>
+    </marker>
+    <filter id="shadow" x="-8%" y="-18%" width="116%" height="136%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#102A43" flood-opacity="0.16"/>
+    </filter>
+    <style>
+      .bg { fill: #f7f9fb; }
+      .title { font: 700 24px Arial, Helvetica, sans-serif; fill: #102A43; }
+      .subtitle { font: 15px Arial, Helvetica, sans-serif; fill: #486581; }
+      .node { fill: #ffffff; stroke: #cbd5df; stroke-width: 2; filter: url(#shadow); }
+      .node-main { stroke: #2CB1A1; }
+      .node-optional { stroke: #F28C28; stroke-dasharray: 8 5; }
+      .node-title { font: 700 17px Arial, Helvetica, sans-serif; fill: #102A43; }
+      .node-body { font: 13px Arial, Helvetica, sans-serif; fill: #3B4A57; }
+      .chip { fill: #FFF3E4; stroke: #F28C28; stroke-width: 1.4; }
+      .chip-text { font: 700 11px Arial, Helvetica, sans-serif; fill: #7A3E00; letter-spacing: 0.3px; }
+      .main-line { stroke: #334E68; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+      .optional-line { stroke: #F28C28; stroke-width: 2.5; stroke-dasharray: 8 6; fill: none; marker-end: url(#arrowOptional); }
+      .caption { font: 12px Arial, Helvetica, sans-serif; fill: #627D98; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="980" height="290" rx="18"/>
+  <text class="title" x="30" y="42">3D-PDR Agent skill workflow</text>
+  <text class="subtitle" x="30" y="66">Minimal path starts at hydro curation; preview, HPC submission, and rendering can be used when needed.</text>
+
+  <line class="optional-line" x1="155" y1="105" x2="260" y2="151"/>
+  <line class="main-line" x1="400" y1="165" x2="460" y2="165"/>
+  <line class="main-line" x1="600" y1="165" x2="660" y2="165"/>
+  <line class="optional-line" x1="530" y1="133" x2="530" y2="103"/>
+  <line class="optional-line" x1="800" y1="165" x2="860" y2="165"/>
+
+  <g>
+    <rect class="node node-optional" x="32" y="88" width="150" height="82" rx="14"/>
+    <rect class="chip" x="55" y="101" width="75" height="20" rx="10"/>
+    <text class="chip-text" x="92.5" y="115" text-anchor="middle">OPTIONAL</text>
+    <text class="node-title" x="107" y="142" text-anchor="middle">preview-hydro</text>
+    <text class="node-body" x="107" y="160" text-anchor="middle">density diagnostics</text>
+  </g>
+
+  <g>
+    <rect class="node node-main" x="260" y="124" width="140" height="82" rx="14"/>
+    <text class="node-title" x="330" y="154" text-anchor="middle">curate-hydro</text>
+    <text class="node-body" x="330" y="174" text-anchor="middle">select HDF5</text>
+    <text class="node-body" x="330" y="191" text-anchor="middle">DAT + velocity</text>
+  </g>
+
+  <g>
+    <rect class="node node-main" x="460" y="124" width="140" height="82" rx="14"/>
+    <text class="node-title" x="530" y="154" text-anchor="middle">run-pdr</text>
+    <text class="node-body" x="530" y="174" text-anchor="middle">3D-PDR-ready</text>
+    <text class="node-body" x="530" y="191" text-anchor="middle">sims_* outputs</text>
+  </g>
+
+  <g>
+    <rect class="node node-optional" x="455" y="24" width="150" height="70" rx="14"/>
+    <rect class="chip" x="492" y="36" width="75" height="20" rx="10"/>
+    <text class="chip-text" x="529.5" y="50" text-anchor="middle">OPTIONAL</text>
+    <text class="node-title" x="530" y="78" text-anchor="middle">hpc-run</text>
+  </g>
+
+  <g>
+    <rect class="node node-main" x="660" y="124" width="140" height="82" rx="14"/>
+    <text class="node-title" x="730" y="154" text-anchor="middle">run-rtsynth</text>
+    <text class="node-body" x="730" y="174" text-anchor="middle">synthetic</text>
+    <text class="node-body" x="730" y="191" text-anchor="middle">observables</text>
+  </g>
+
+  <g>
+    <rect class="node node-optional" x="860" y="124" width="100" height="82" rx="14"/>
+    <rect class="chip" x="872" y="136" width="75" height="20" rx="10"/>
+    <text class="chip-text" x="909.5" y="150" text-anchor="middle">OPTIONAL</text>
+    <text class="node-title" x="910" y="178" text-anchor="middle">render-rt</text>
+    <text class="node-body" x="910" y="196" text-anchor="middle">PNG maps</text>
+  </g>
+
+  <text class="caption" x="330" y="237" text-anchor="middle">Minimal workflow: curate-hydro -> run-pdr -> run-rtsynth</text>
+  <text class="caption" x="650" y="260" text-anchor="middle">Use optional skills for pre-selection diagnostics, cluster execution, and rendered quick-look products.</text>
+</svg>
