@@ -1,0 +1,41 @@
+{
+  "name": "3d-pdr-agent",
+  "version": "0.1.0",
+  "description": "Codex skills for INPUT data placement, 3D-PDR runs, HPC submission, RTsynth production, and RT visualisation.",
+  "author": {
+    "name": "3D-PDR Agent Maintainers",
+    "email": "TODO@example.com",
+    "url": "https://example.com"
+  },
+  "homepage": "https://example.com/3d-pdr-agent",
+  "repository": "https://example.com/3d-pdr-agent.git",
+  "license": "TODO",
+  "keywords": [
+    "3d-pdr",
+    "starforge",
+    "hpc",
+    "rtsynth",
+    "visualization"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "3D-PDR Agent",
+    "shortDescription": "Workflow skills for INPUT, 3D-PDR, HPC, RTsynth, and visualization.",
+    "longDescription": "Provides Codex skills that organize INPUT snapshots, generate 3D-PDR DAT inputs, prepare and run 3D-PDR jobs, sync and submit HPC work, produce RTsynth products, and render RT output images.",
+    "developerName": "3D-PDR Agent Maintainers",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://example.com/3d-pdr-agent",
+    "privacyPolicyURL": "https://example.com/privacy",
+    "termsOfServiceURL": "https://example.com/terms",
+    "defaultPrompt": [
+      "Use sel-dat for snapshot 810.",
+      "Run 3D-PDR for a selected snapshot.",
+      "Render RTsynth products to PNG."
+    ],
+    "brandColor": "#2563EB"
+  }
+}

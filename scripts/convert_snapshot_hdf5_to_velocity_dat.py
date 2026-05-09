@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
-"""Convert INPUT snapshot HDF5 to 3D-PDR .dat format.
+"""Convert INPUT snapshot HDF5 to RTsynth velocity file format.
 
-This follows the notebook workflow:
-- Load snapshot with yt unit_base.
-- Regrid to N^3 on the selected box with arbitrary_grid.
-- Convert mass density to number density.
-- Write x, y, z, number_density with two-line header:
-  1) N N N
-  2) box_size_pc box_size_pc box_size_pc
+The output is a plain text file with one row per cell:
+  vx vy vz
+
+where each component is written in cm/s, matching RTsynth expectations
+when VELOCITY mode is enabled.
 """
 
 from __future__ import annotations
@@ -31,10 +29,10 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("input_hdf5", type=Path, help="Input snapshot_XXX.hdf5 path")
     parser.add_argument(
-        "--output-dat",
+        "--output-vel",
         type=Path,
         default=None,
-        help="Output .dat file path (default: snapshot_XXX.dat next to input)",
+        help="Output velocity file path (default: snapshot_XXX_v.dat next to input)",
     )
     parser.add_argument(
         "--n",
@@ -59,10 +57,9 @@ def parse_args() -> argparse.Namespace:
         help="Arbitrary-grid right edge in code length units",
     )
     parser.add_argument(
-        "--mu",
-        type=float,
-        default=2.3,
-        help="Mean molecular weight used for number-density conversion",
+        "--overwrite",
+        action="store_true",
+        help="Overwrite output velocity file if it already exists",
     )
     return parser.parse_args()
 
@@ -88,6 +85,13 @@ def infer_n_from_sim_folder(input_hdf5: Path) -> int:
     return int(value)
 
 
+def _to_cms(field: yt.YTArray) -> np.ndarray:
+    try:
+        return field.to_value("cm/s")
+    except Exception:
+        return field.v
+
+
 def main() -> None:
     args = parse_args()
 
@@ -95,17 +99,20 @@ def main() -> None:
     if not input_hdf5.exists():
         raise FileNotFoundError(f"Input file not found: {input_hdf5}")
 
-    output_dat = (
-        args.output_dat
-        if args.output_dat is not None
-        else input_hdf5.with_suffix(".dat")
-    )
-    output_dat.parent.mkdir(parents=True, exist_ok=True)
+    default_output = input_hdf5.with_name(f"{input_hdf5.stem}_v.dat")
+    output_vel = args.output_vel if args.output_vel is not None else default_output
+    output_vel.parent.mkdir(parents=True, exist_ok=True)
+
+    if output_vel.exists() and not args.overwrite:
+        raise FileExistsError(
+            f"Output already exists: {output_vel}. Use --overwrite to replace it."
+        )
 
     ds = yt.load(str(input_hdf5), unit_base=UNIT_BASE)
 
     n = args.n if args.n is not None else infer_n_from_sim_folder(input_hdf5)
-    box_size_pc = ds.domain_width.value[0]
+    if n <= 0:
+        raise ValueError(f"Invalid grid size n={n}; expected positive integer")
 
     ag = ds.arbitrary_grid(
         left_edge=args.left_edge,
@@ -113,30 +120,36 @@ def main() -> None:
         dims=(n, n, n),
     )
 
-    density_grid = ag[("gas", "density")].v
-    n_density = density_grid / (args.mu * yt.physical_constants.mh)
+    vx = _to_cms(ag[("gas", "velocity_x")])
+    vy = _to_cms(ag[("gas", "velocity_y")])
+    vz = _to_cms(ag[("gas", "velocity_z")])
 
-    box_size_slice = args.right_edge[0] - args.left_edge[0]
-    cell_size = box_size_slice / n
-    coords = np.linspace(cell_size / 2.0, box_size_slice - cell_size / 2.0, n)
+    expected_shape = (n, n, n)
+    if vx.shape != expected_shape or vy.shape != expected_shape or vz.shape != expected_shape:
+        raise ValueError(
+            "Unexpected velocity grid shape: "
+            f"vx={vx.shape}, vy={vy.shape}, vz={vz.shape}, expected={expected_shape}"
+        )
 
-    x_grid, y_grid, z_grid = np.meshgrid(coords, coords, coords, indexing="ij")
+    if not (np.isfinite(vx).all() and np.isfinite(vy).all() and np.isfinite(vz).all()):
+        raise ValueError("Velocity grid contains NaN/Inf values")
 
-    x = x_grid.flatten()
-    y = y_grid.flatten()
-    z = z_grid.flatten()
-    density = n_density.value.flatten()
+    # Flatten in C-order so k-index changes fastest, matching ci/cj/ck read loops.
+    data = np.column_stack([vx.flatten(), vy.flatten(), vz.flatten()])
+    expected_rows = n ** 3
+    if data.shape != (expected_rows, 3):
+        raise ValueError(
+            f"Unexpected output matrix shape {data.shape}; expected ({expected_rows}, 3)"
+        )
 
-    data = np.column_stack([x, y, z, density])
+    np.savetxt(output_vel, data, fmt="%.6e")
 
-    with output_dat.open("w", encoding="utf-8") as f:
-        f.write(f"{n}\t{n}\t{n}\n")
-        f.write(f"{box_size_pc}\t {box_size_pc}\t {box_size_pc} \n")
-        np.savetxt(f, data, fmt="%.6e")
-
-    print(f"[OK] Wrote {output_dat}")
+    print(f"[OK] Wrote {output_vel}")
     print(f"[INFO] Grid: {n}^3")
-    print(f"[INFO] Number density max: {np.max(n_density.value):.3e} cm^-3")
+    print(
+        "[INFO] |v| max (cm/s): "
+        f"{np.sqrt(vx * vx + vy * vy + vz * vz).max():.3e}"
+    )
 
 
 if __name__ == "__main__":

@@ -1,5 +1,5 @@
 ---
-name: raw-folder-data-placement
+name: raw-place
 description: 'Follow STARFORGE RAW directory structure for incoming data. Use when user provides a file path or download link and wants data placed in the correct RAW snapshot location, then optionally linked into SELECTED.'
 argument-hint: 'Provide file/link plus target simulation and snapshot id.'
 user-invocable: true

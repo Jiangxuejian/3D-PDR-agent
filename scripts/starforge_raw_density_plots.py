@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate density diagnostics for STARFORGE RAW HDF5 snapshots.
+"""Generate density diagnostics for INPUT RAW HDF5 snapshots.
 
 For each candidate HDF5 file under the RAW directory, this script creates:
 1) A yt slice plot through the domain center.
@@ -205,7 +205,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--raw-root",
         type=Path,
-        default=Path("STARFORGE/RAW"),
+        default=Path("INPUT/RAW"),
         help="Directory containing RAW HDF5 snapshots.",
     )
     parser.add_argument(
