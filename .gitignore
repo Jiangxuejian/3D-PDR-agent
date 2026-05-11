@@ -4,8 +4,6 @@
 !/docs/
 !/docs/assets/
 !/docs/assets/*.svg
-!/posters/
-!/posters/*.pptx
 !/.agents/
 !/.agents/plugins/
 !/.agents/plugins/marketplace.json
