@@ -35,7 +35,7 @@
   <line class="optional-line" x1="155" y1="105" x2="260" y2="151"/>
   <line class="main-line" x1="400" y1="165" x2="460" y2="165"/>
   <line class="main-line" x1="600" y1="165" x2="660" y2="165"/>
-  <line class="optional-line" x1="530" y1="133" x2="530" y2="103"/>
+  <line class="optional-line" x1="530" y1="124" x2="530" y2="116"/>
   <line class="optional-line" x1="800" y1="165" x2="860" y2="165"/>
 
   <g>
@@ -61,10 +61,9 @@
   </g>
 
   <g>
-    <rect class="node node-optional" x="455" y="24" width="150" height="70" rx="14"/>
-    <rect class="chip" x="492" y="36" width="75" height="20" rx="10"/>
-    <text class="chip-text" x="529.5" y="50" text-anchor="middle">OPTIONAL</text>
-    <text class="node-title" x="530" y="78" text-anchor="middle">hpc-run</text>
+    <rect class="node node-optional" x="455" y="82" width="150" height="34" rx="12"/>
+    <text class="node-title" x="530" y="103" text-anchor="middle">hpc-run</text>
+    <text class="chip-text" x="530" y="113" text-anchor="middle">OPTIONAL</text>
   </g>
 
   <g>

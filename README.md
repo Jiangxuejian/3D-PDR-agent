@@ -1,50 +1,66 @@
 
-# 3D-PDR Agent Workspace
+# 3D-PDR Agent 
 
-This repository provides a modular, agent-compatible workflow for running 3D-PDR and RT-synth simulations, with reusable skills and a repo-local Codex plugin.
+## Motivation
+
+This repository provides a modular, agent-compatible workflow for running 3D-PDR and RT-synth simulations, packaged as reusable skills.
+
+Once you have installed 3D-PDR and RT-synth, you can use the skills in this repository to automate the entire workflow from raw hydro snapshots to synthetic observables. Your AI agent can call these skills and understand your requested parameters, fix the tedious compilation and setup steps, and execute the simulations for you.
 
 ![3D-PDR Agent workflow](docs/assets/workflow.svg)
 
 ## Features
 - Canonical workflow skills in `plugins/3d-pdr-agent/skills/`
 - Automated workflows for 3D-PDR and RT-synth
-- Repo-local Codex plugin in `plugins/3d-pdr-agent/`
 - Lightweight project metadata and helper scripts
 
 ## Directory Structure
 
 - `INPUT/` — Simulation input data (formerly STARFORGE)
-- `plugins/3d-pdr-agent/` — Codex plugin packaging and canonical workflow skills
+- `plugins/3d-pdr-agent/skills/` — canonical workflow skills
 - `3D-PDR-dev/` — Link or clone to your local 3D-PDR runtime codebase
 - `RT-synth/` — Link or clone to your local RT-synth codebase
 
 ## Prerequisites
 
-1. An AI agent platform (Claude Code, Codex, GitHub Copilot, Hermes Agent, OpenClaw, etc.)
+1. An AI agent platform that can load local skills, such as Claude Code or Codex.
 2. 3D-PDR and RT-synth codebases (see below)
 
-### Setting Up 3D-PDR and RT-synth
-
-**Option 1: Link to local installations**
+### Option 1: Link to local 3D-PDR and RT-synth installations**
 
 Place symlinks to your local 3D-PDR and RT-synth codebases in `./3D-PDR-dev` and `./RT-synth`.
 
-**Option 2: Download codebases**
+### Option 2: Download codebases
 
 - [3D-PDR](https://github.com/itamos-ism/3D-PDR) → `./3D-PDR-dev`
 - [RT-synth](https://github.com/itamos-ism/RT-synth) → `./RT-synth`
 
-## Installation & Usage
+## Install Skills
 
-Just ask your AI agent to handle the installation.
+For a first version, keep the setup simple: install or link the skills directly from this repository.
 
-**For Claude Code:**
+Canonical skill folder:
 
-> Install the 3D-PDR and RT-synth skills from this repository. Ensure the agent has access to the `./3D-PDR-dev` and `./RT-synth` directories for script execution.
+`plugins/3d-pdr-agent/skills/`
 
-**For Codex Plugin:**
+Available skills:
 
-> Use the repo-local plugin in `plugins/3d-pdr-agent/`, registered by `.agents/plugins/marketplace.json`. Ensure Codex has access to `./3D-PDR-dev` and `./RT-synth` for script execution.
+- `preview-hydro`
+- `curate-hydro`
+- `run-pdr`
+- `hpc-run`
+- `run-rtsynth`
+- `render-rt`
+
+Recommended setup:
+
+1. Clone this repository.
+2. Make sure `./3D-PDR-dev` and `./RT-synth` are available in the workspace.
+3. Point your agent to `plugins/3d-pdr-agent/skills/`, or copy/symlink the skill folders from there into the agent's local skill directory.
+
+**For Claude Code or Codex, the simplest instruction is:**
+
+> Install the skills from `plugins/3d-pdr-agent/skills/` and ensure the agent has access to `./3D-PDR-dev`, `./RT-synth`, and `./INPUT`.
 
 
 ## Skill Workflow
